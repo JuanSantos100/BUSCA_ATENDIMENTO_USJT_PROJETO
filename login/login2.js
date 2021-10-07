@@ -11,34 +11,44 @@ app.get("/",function(req,res){
 app.post("/logar", (req,res) => {
     let usuario = req.body.usuario;
     let senha = req.body.senha;
-    let tipo = req.body.tipo;
-    let usuarios = [["Caetano","ocaets","cliente"], 
-    ["Juan","ojuju","master"], 
-    ["Farfan", "ofarfas","hospital"]]
-    
-    for (let x=0; x < usuarios.length; x++) {
-        if (usuarios[x][0] == usuario && usuarios[x][1] == senha)   {
-            if (usuarios[x][2] == 'cliente') {
-                console.log('cheguei aqui...')
-                res.status(200).send("Seja bem vindo cliente")
-            }
-            else if (usuarios[x][2] == 'hospital') {
-                res.status(200).send("Seja bem vindo hospital")
-            }
-            else if (usuarios[x][2] == 'master') {
-                res.status(200).send("Seja bem vindo master")
-            }
-            else {
-                res.status(401).send("Usuário não classificado")
-            }          
-        }                    
+    let tipo_usuario = req.body.tipo;
+    // let usuarios = [["Caetano","ocaets","cliente"], 
+    // ["Juan","ojuju","master"], 
+    // ["Farfan", "ofarfas","hospital"]]
+
+    let usuarios = [
+        {"usuario": "Caetano", "senha": "ocaets", "tipo_usuario": "cliente"},
+        {"usuario": "Juan", "senha": "ojuju", "tipo_usuario": "adm"}
+    ]
+
+    for (let u = 0; u < usuarios.length; u++) {
+        console.log(us.usuario[usuario])
+        console.log(us.senha[senha])
         
-        else{
-            res.end("Senha ou usuaário incorreto. Por favor tente novamente.")
+        us = usuarios[u]
+        if(us.usuario === usuario && us.senha === senha) {
+            console.log(u)
+            console.log('Entrei no if')
+            res.status(200)
+            return;
         }
-    }	
+       
+    }
+
+    
+
+    res.status(200).send("Login feito com sucesso")
+    // for (let x=0; x < usuarios.length; x++) {
+    //     if (usuarios[x][0] == usuario && usuarios[x][1] == senha)   {
+                   
+    //     }                    
+        
+    //     else{
+    //         res.end("Senha ou usuaário incorreto. Por favor tente novamente.")
+    //     }
+    // }	
+
+    
 })
 
-app.listen(3000, () => {
-    console.log("Login, porta 3000")
-});
+app.listen(3000, () => {console.log("Login, porta 3000")});
