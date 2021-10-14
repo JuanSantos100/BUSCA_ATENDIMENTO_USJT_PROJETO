@@ -35,7 +35,7 @@ export default function Login({ navigation }) {
 
    
     async function enviarLogin() {
-        let response = await fetch('http://192.168.1.66:3000/login', {
+        let response = await fetch('http://10.122.8.50:3000/login', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
