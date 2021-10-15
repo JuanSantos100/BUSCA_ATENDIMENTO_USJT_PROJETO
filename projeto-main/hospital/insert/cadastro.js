@@ -42,7 +42,7 @@ app.post('/hospital/cadastro', (req,res) => {
 
 //Deletar um hospital
 app.delete('/hospital/delete/:id', (req, res) => {
-    const hospital_id = req.params.id
+    const hospital_id = +req.params.id
     console.log(hospital_id)
 
     const deleted = hospitais.find(hospital => hospital.id === hospital_id) //Problema nesta linha
