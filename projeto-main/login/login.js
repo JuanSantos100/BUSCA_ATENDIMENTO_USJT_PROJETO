@@ -10,12 +10,23 @@ app.get('/', (req, res) => {
     res.send('Meu servidor backend já está online !')
 })
 
-let base_usuarios = [["Juan@hotmail.com", "123", 1], ["Caetano@hotmail.com", "456", 2], ["Farfan@hotmail.com", "789", 3]]
+let base_usuarios = [
+    {
+        email: "juan@hotmail.com",
+        password: "123", 
+    },
+    {
+        email: "caetano@hotmail.com",
+        password: "456"
+    }
+]
 
 app.post('/login', (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     console.log('Email: ' + req.body.email);
     console.log('Password: ' + req.body.password);
+    
+    
     
     for(let x = 0; x < base_usuarios.length; x++) {
         if (req.body.email == base_usuarios[x][0]) { //Verificação de usuário
@@ -25,10 +36,10 @@ app.post('/login', (req, res) => {
                 res.status(401).send("Usuário ou senha incorreta")
                 console.log('Usuário ou senha incorreta')
             }
-        } 
+        } else {
+            res.status(404).send("Usuário não existe")
+        }
     }
-    res.status(404).send("Usuário não existe")
-    console.log('Usuário não existe')
 })
 
 

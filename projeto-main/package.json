@@ -1,7 +1,6 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "nodemon Controller.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
