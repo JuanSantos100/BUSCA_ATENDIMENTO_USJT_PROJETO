@@ -21,31 +21,32 @@ let base_usuarios = [
     }
 ]
 
-app.post('/login', (req, res) => {
-    // console.log(req.body);
-    // console.log('Email: ' + base_usuarios.email);
-    // console.log('Password: ' + base_usuarios.password);
 
-   
-    
-    
-    
-    for(let x = 0; x < base_usuarios.length; x++) {
-        if (req.body.email == base_usuarios.email) { //Verificação de usuário
-            if(req.body.password == base_usuarios.password) { //Verificação da senha
-                res.status(200).send('Seja bem vindo ' + req.body.email)
-            } else {
-                res.status(401).send("Usuário ou senha incorreta")
-                console.log('Usuário ou senha incorreta')
-            }
-        } else {
-            res.status(404).send("Usuário não existe")
-        }
+// app.post('/login', (req, res) => {
+//     // console.log(req.body);
+//     // console.log('Email: ' + base_usuarios.email);
+//     // console.log('Password: ' + base_usuarios.password);
+//     for(let x = 0; x < base_usuarios.length; x++) {
+//         if (req.body.email == base_usuarios.email) { //Verificação de usuário
+//             if(req.body.password == base_usuarios.password) { //Verificação da senha
+//                 res.status(200).send('Seja bem vindo ' + req.body.email)
+//             } else {
+//                 res.status(401).send("Usuário ou senha incorreta")
+//                 console.log('Usuário ou senha incorreta')
+//             }
+//         } else {
+//             res.status(404).send("Usuário não existe")
+//         }
+//     }
+// })
+
+app.post('/login', (req, res) => {
+    if(base_usuarios.find(usr => usr.email == req.body.email && usr.password == req.body.password)){
+        res.status(201).send("logado")
+    }else{
+        res.status(404).send("não encontrado")
     }
 })
-
-
-
 
 let porta = process.env.PORT || 3000; 
 
