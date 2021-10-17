@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon cadastro.js"
+    "start": "nodemon operacoes_convenio.js"
   },
   "keywords": [],
   "author": "",
