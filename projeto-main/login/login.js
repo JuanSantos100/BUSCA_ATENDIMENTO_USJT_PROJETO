@@ -23,14 +23,16 @@ let base_usuarios = [
 
 app.post('/login', (req, res) => {
     // console.log(req.body);
-    console.log('Email: ' + req.body.email);
-    console.log('Password: ' + req.body.password);
+    // console.log('Email: ' + base_usuarios.email);
+    // console.log('Password: ' + base_usuarios.password);
+
+   
     
     
     
     for(let x = 0; x < base_usuarios.length; x++) {
-        if (req.body.email == base_usuarios[x][0]) { //Verificação de usuário
-            if(req.body.password == base_usuarios[x][1]) { //Verificação da senha
+        if (req.body.email == base_usuarios.email) { //Verificação de usuário
+            if(req.body.password == base_usuarios.password) { //Verificação da senha
                 res.status(200).send('Seja bem vindo ' + req.body.email)
             } else {
                 res.status(401).send("Usuário ou senha incorreta")
