@@ -7,19 +7,6 @@ app.use(bodyParser.json())
 let id_hospital = 1
 let hospitais = []
 
-//         id: 1,
-//         nome: 'Hopital Prevent',
-//         tipo_hospital: 'privado', 
-//         capacidade_atendimento : 30,
-//         qtd_leitos_disponiveis : 200,
-//         telefone: '2030-4000',
-//         horario_funcionamento: '24h' 
-
-//Teste
-app.get ('/teste', (req, res) => {
-    console.log ("Passando por aqui...")
-    res.status(200).send('Está tudo ok ! ')
-})
 
 //Cadastro de hosptital
 app.post('/hospital/cadastro', (req,res) => {
@@ -34,8 +21,6 @@ app.post('/hospital/cadastro', (req,res) => {
         telefone: req.body.telefone,
         horario_funcionamento: req.body.horario_funcionamento
     }
-    // id_hospital++;
-    // const hospital = req.body
     hospitais.push(hospital)
     res.status(201).json(hospital)
 })
