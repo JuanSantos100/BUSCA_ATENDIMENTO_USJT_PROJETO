@@ -2,8 +2,10 @@ import React from 'react';
 import { TextInput, Avatar, Button, Surface } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 
-export const Login = ({ navigation }) => {
-
+export const Registro = ({ navigation }) => {
+    const [textDocumento, setTextDocumento] = React.useState('');
+    const [textNascimento, setTextNascimento] = React.useState('');
+    const [textNome, setTextNome] = React.useState('');
     const [textEmail, setTextEmail] = React.useState('');
     const [textPassword, setTextPassword] = React.useState('');
 
@@ -14,16 +16,40 @@ export const Login = ({ navigation }) => {
         })
     }
 
-    const Registro = () => {
+    const Login = () => {
         navigation.reset({
             index: 0,
-            routes: [{ name: "Registro" }]
+            routes: [{ name: "Login" }]
         })
     }
 
     return (
         <Surface style={styles.surface}>
             <Avatar.Text style={styles.iconApp} size={24} label="" />
+            <TextInput
+                style={styles.input}
+                label="Nome"
+                mode="outlined"
+                value={textNome}
+                onChangeText={textNome => setTextNome(textNome)}
+            />
+
+            <TextInput
+                style={styles.input}
+                label="Data de nascimento"
+                mode="outlined"
+                value={textNascimento}
+                onChangeText={textNascimento => setTextNascimento(textNascimento)}
+            />
+
+            <TextInput
+                style={styles.input}
+                label="CPF"
+                mode="outlined"
+                value={textDocumento}
+                onChangeText={textDocumento => setTextDocumento(textDocumento)}
+            />
+
             <TextInput
                 style={styles.input}
                 label="Email"
@@ -41,10 +67,10 @@ export const Login = ({ navigation }) => {
             />
 
             <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => Entrar()}>
-                Entrar
+                Criar Conta
             </Button>
-            <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Registro()}>
-                Registro
+            <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Login()}>
+                Voltar ao Login
             </Button>
         </Surface>
     )

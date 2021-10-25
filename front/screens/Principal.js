@@ -1,73 +1,33 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { BottomNavigation, Text } from 'react-native-paper';
+import {Hospitais} from './Hospitais'
 
-function Feed() {
+const HospitaisScreen = () => <Hospitais />;
+
+const Historico = () => <Text>Albums</Text>;
+
+export const Principal = () => {
+    const [index, setIndex] = React.useState(0);
+
+    const [routes] = React.useState([
+        { key: 'hospitals', title: 'Hospitais', icon: 'hospital' },
+        { key: 'history', title: 'Histórico', icon: 'history' },
+    ]);
+
+    const renderScene = ({ route, jumpTo }) => {
+        switch (route.key) {
+            case 'hospitals':
+                return <HospitaisScreen jumpTo={jumpTo} />;
+            case 'history':
+                return <Historico jumpTo={jumpTo} />;
+        }
+    }
+
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Feed!</Text>
-        </View>
+        <BottomNavigation
+            navigationState={{ index, routes }}
+            onIndexChange={setIndex}
+            renderScene={renderScene}
+        />
     );
-}
-
-function Profile() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Profile!</Text>
-        </View>
-    );
-}
-
-function Notifications() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Notifications!</Text>
-        </View>
-    );
-}
-
-const Tab = createBottomTabNavigator();
-
-export default function Principal() {
-    return (
-        <Tab.Navigator
-            initialRouteName="Feed"
-            tabBarOptions={{
-                activeTintColor: '#e91e63',
-            }}
-        >
-            <Tab.Screen
-                name="Feed"
-                component={Feed}
-                options={{
-                    tabBarLabel: 'Home',
-                    tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="home" color={color} size={size} />
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name="Notifications"
-                component={Notifications}
-                options={{
-                    tabBarLabel: 'Updates',
-                    tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="bell" color={color} size={size} />
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name="Profile"
-                component={Profile}
-                options={{
-                    tabBarLabel: 'Profile',
-                    tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="account" color={color} size={size} />
-                    ),
-                }}
-            />
-        </Tab.Navigator>
-    );
-}
+};
