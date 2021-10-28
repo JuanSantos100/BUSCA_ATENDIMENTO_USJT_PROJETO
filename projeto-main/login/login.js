@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const { response } = require('express');
 const app = express();
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -41,10 +42,14 @@ let base_usuarios = [
 // })
 
 app.post('/login', (req, res) => {
+    console.log(req.body)
+    
     if(base_usuarios.find(usr => usr.email == req.body.email && usr.password == req.body.password)){
-        res.status(201).send("logado")
+        res.send(response)
+        console.log(response)
     }else{
-        res.status(404).send("não encontrado")
+        res.send(JSON.stringify('ERROR'))
+        // res.status(404).send("Usuário ou Senha inválidos")
     }
 })
 

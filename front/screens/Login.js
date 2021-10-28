@@ -21,6 +21,26 @@ export const Login = ({ navigation }) => {
         })
     }
 
+    async function enviarLogin() {
+        let response = await fetch('http://192.168.1.66:3000/login', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: textEmail,
+                password: textPassword
+            })
+
+        })
+
+        let json = await response.json()
+        if (json === 'ERROR') {
+            console.log('Erro de usuário')
+        }
+    }
+
     return (
         <Surface style={styles.surface}>
             <Avatar.Text style={styles.iconApp} size={24} label="" />
@@ -38,9 +58,11 @@ export const Login = ({ navigation }) => {
                 mode="outlined"
                 value={textPassword}
                 onChangeText={textPassword => setTextPassword(textPassword)}
+                secureTextEntry={true}
             />
 
-            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => Entrar()}>
+            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => enviarLogin()}>
+            {/* Entrar() */}
                 Entrar
             </Button>
             <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Registro()}>
