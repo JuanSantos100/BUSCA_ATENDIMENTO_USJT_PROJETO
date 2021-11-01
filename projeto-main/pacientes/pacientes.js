@@ -26,6 +26,26 @@ app.post('/pacientes/cadastro', (req, res) => {
 })
 
 
+//Em desenvolvimento
+app.post('/paciente/convenios/cadastro/:id', (req, res) => {
+    const id_paciente = req.params.id
+    const convenio = {
+        id_convenio: req.body.id_convenio,
+        nome_convenio: req.body.nome_convenio
+    }
+
+    const paciente_convenio = pacientes.find(paciente => paciente.id_paciente === id_paciente)
+    console.log(paciente_convenio)
+    if(paciente_convenio) {
+        pacientes[id_paciente] = {convenio: convenio}
+        res.status(201).send(pacientes[id_paciente])
+    }
+    else {
+        res.status(404).json({mensagem: 'Paciente não encontrado'})
+    }
+})
+
+
 app.delete('/pacientes/delete/:id', (req, res) => {
     const id_paciente = +req.params.id
     // console.log(id_paciente)
