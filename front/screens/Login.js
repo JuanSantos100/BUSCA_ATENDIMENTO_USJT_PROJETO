@@ -61,8 +61,7 @@ export const Login = ({ navigation }) => {
                 secureTextEntry={true}
             />
 
-            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => enviarLogin()}>
-            {/* Entrar() */}
+            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => Entrar()}>
                 Entrar
             </Button>
             <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Registro()}>

@@ -2,11 +2,11 @@ import * as React from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
 import {Hospitais} from './Hospitais'
 
-const HospitaisScreen = () => <Hospitais />;
+const HospitaisScreen = ({navigation}) => <Hospitais navigation={navigation} />;
 
 const Historico = () => <Text>Albums</Text>;
 
-export const Principal = () => {
+export const Principal = ({navigation}) => {
     const [index, setIndex] = React.useState(0);
 
     const [routes] = React.useState([
@@ -17,9 +17,9 @@ export const Principal = () => {
     const renderScene = ({ route, jumpTo }) => {
         switch (route.key) {
             case 'hospitals':
-                return <HospitaisScreen jumpTo={jumpTo} />;
+                return <HospitaisScreen navigation={navigation} jumpTo={jumpTo} />;
             case 'history':
-                return <Historico jumpTo={jumpTo} />;
+                return <Historico navigation={navigation} jumpTo={jumpTo} />;
         }
     }
 
