@@ -1,64 +1,136 @@
+require('dotenv').config()
 const experss = require('express')
 const bodyParser = require('body-parser')
+const mysql = require('mysql2')
+const { restart } = require('nodemon')
 const app = experss()
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
+
+const {DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE} = process.env
+
 
 app.get('/', (req, res) => {
     res.send('Servidor de usuários online')
 })
 
-let id_paciente = 1
+//CADASTRO DE PACIENTE
+app.post('/paciente/cadastro', (req, res) => {
+    const connection = mysql.createConnection({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        database: DB_DATABASE
+    })
 
-let pacientes = []
+    const cpf = req.body.cpf
+    const nome = req.body.nome_paciente
+    const sql = `INSERT INTO PACIENTE (CPF_PACIENTE, NM_PACIENTE) VALUES (?,?)`
+    connection.query(
+        sql,
+        [cpf, nome], 
+        (err, results, fields) => {            
+            console.log(results)
+            res.send('Paciente cadastrado com sucesso')
+        }
+    )
+})
 
-app.post('/pacientes/cadastro', (req, res) => {
-    const paciente = {
-        id_paciente: id_paciente++,
-        nome_paciente: req.body.nome_paciente,
-        situacao: req.body.situacao,
-        sexo: req.body.sexo,
-        data_nascimento: req.body.data_nascimento
-    }
+//CONSULTA DE ACORDO UM PACIENTE
+app.get('/paciente/consulta/:id', (req, res) => {
+    const connection = mysql.createConnection({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        database: DB_DATABASE
+    })
 
-    pacientes.push(paciente)
-    res.status(201).json(paciente)
+    const id_paciente = +req.params.id 
+
+    const sql = 'SELECT * FROM PACIENTE WHERE CD_PACIENTE = ?'
+
+    connection.query(
+        sql,
+        [id_paciente], 
+        (err, results, fields) => {
+            res.json(results)
+        }
+    )
+})
+
+//CONSULTA TODOS OS PACIENTES
+app.get('/paciente/consulta', (req, res) => {
+    const connection = mysql.createConnection({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        database: DB_DATABASE
+    })
+
+    const id_paciente = +req.params.id 
+
+    const sql = 'SELECT * FROM PACIENTE'
+
+    connection.query(
+        sql,
+        [id_paciente], 
+        (err, results, fields) => {
+            res.json(results)
+        }
+    )
 })
 
 
 //Em desenvolvimento
-app.post('/paciente/convenios/cadastro/:id', (req, res) => {
-    const id_paciente = req.params.id
-    const convenio = {
-        id_convenio: req.body.id_convenio,
-        nome_convenio: req.body.nome_convenio
-    }
+// app.post('/paciente/convenios/cadastro/:id', (req, res) => {
+//     const id_paciente = req.params.id
+//     const convenio = {
+//         id_convenio: req.body.id_convenio,
+//         nome_convenio: req.body.nome_convenio
+//     }
 
-    const paciente_convenio = pacientes.find(paciente => paciente.id_paciente === id_paciente)
-    console.log(paciente_convenio)
-    if(paciente_convenio) {
-        pacientes[id_paciente] = {convenio: convenio}
-        res.status(201).send(pacientes[id_paciente])
-    }
-    else {
-        res.status(404).json({mensagem: 'Paciente não encontrado'})
-    }
+//     const paciente_convenio = pacientes.find(paciente => paciente.id_paciente === id_paciente)
+//     console.log(paciente_convenio)
+//     if(paciente_convenio) {
+//         pacientes[id_paciente] = {convenio: convenio}
+//         res.status(201).send(pacientes[id_paciente])
+//     }
+//     else {
+//         res.status(404).json({mensagem: 'Paciente não encontrado'})
+//     }
+// })
+
+// CADASTRO DE CONVENIO PARA PACIENTE
+app.post ('/paciente/convenios/cadastro/:id', (req, res) => {
+    const connection = mysql.createConnection({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        database: DB_DATABASE
+    })
 })
 
 
-app.delete('/pacientes/delete/:id', (req, res) => {
-    const id_paciente = +req.params.id
-    // console.log(id_paciente)
+//DELETE DE UM PACIENTE
+app.delete ('/pacientes/delete/:id', (req, res) => {
+    const connection = mysql.createConnection({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        database: DB_DATABASE
+    })
 
-    const paciente_deletado = pacientes.find(paciente => paciente.id_paciente === id_paciente)
-    console.log(paciente_deletado)
-    if(paciente_deletado) {
-        pacientes = pacientes.filter(paciente => paciente.id_paciente !== id_paciente)
-        res.status(200).json(paciente_deletado)
-    } else {
-        res.status(404).json({mensagem: "Paciente não encontrado"})
-    }
-}) 
+    const id_paciente = req.params.id
+
+    const sql = `DELETE FROM PACIENTE WHERE CD_PACIENTE = ?`
+    connection.query(
+        sql,
+        [id_paciente],
+        (err, results, fields) => {
+            res.send('Paciente excluído')
+        }
+    )
+})
 
 app.put('/pacientes/atualizacao/:id', (req, res) => {
     const id_paciente = +req.params.id
@@ -72,6 +144,25 @@ app.put('/pacientes/atualizacao/:id', (req, res) => {
         res.status(404).json({mensagem: "Paciente não encontrado"})
     }
 }) 
+
+app.get('/hospitais', (req, res) => {
+    const connection = mysql.createConnection({
+        host: DB_HOST,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        database: DB_DATABASE
+    })
+
+    const sql = 'SELECT * FROM HOSPITAL'
+    connection.query(
+        sql, 
+        (err, results, fields) => {
+            console.log(results)
+            console.log(fields)
+            res.send('ok')
+        }
+    )
+})
 
 
 app.get('/pacientes/consulta', (req, res) => {
