@@ -73,33 +73,56 @@ app.get('/pacientes/consulta', (req, res) => {
 // CADASTRO DE CONVENIO PARA PACIENTE
 app.post ('/pacientes/convenios/cadastro/:id', (req, res) => {
 
+    // const sql = `
+    //     INSERT INTO PACIENTE_CONVENIO (CD_CONVENIO, CD_PACIENTE) VALUES (?,?)
+    // `
+    // const sql2 = `
+    //     UPDATE PACIENTE SET CARTEIRINHA = ? WHERE CD_PACIENTE = ?
+    // `
     const sql = `
-        INSERT INTO PACIENTE_CONVENIO (CD_CONVENIO, CD_PACIENTE) VALUES (?,?)
+        INSERT INTO PACIENTE_CONVENIO (CD_CONVENIO, CD_PACIENTE, CARTEIRINHA) VALUES(?, ?, ?)
+    
     `
-    const sql2 = `
-        UPDATE PACIENTE SET CARTEIRINHA = ? WHERE CD_PACIENTE = ?
-    `
+
     const cd_paciente = +req.params.id
     const cd_convenio = +req.body.cd_convenio
     const carteirinha = req.body.carteirinha
 
-    pool.query(
-        sql, 
-        [cd_convenio, cd_paciente], 
-        (err, results, fields) => {
-            console.log(results)
-        }
-    )
+    console.log(cd_convenio, cd_paciente, carteirinha)
 
     pool.query(
-        sql2,
-        [carteirinha, cd_paciente],
+        sql, 
+        [cd_convenio, cd_paciente, carteirinha], 
         (err, results, fields) => {
             console.log(results)
-            res.send('Carteirinha adicionada com sucesso')
+            res.send('Operação realizada com sucesso !')
         }
     )
         
+})
+
+//EXCLUSÃO DE CARTEIRINHA PARA O PACIENTE
+app.delete('/pacientes/convenios/delete/:id', (req, res) => {
+    const cd_paciente = +req.params.id
+    const cd_convenio = +req.body.cd_convenio
+    
+    const sql = `
+        DELETE FROM PACIENTE_CONVENIO
+        WHERE CD_CONVENIO = ?
+        AND CD_PACIENTE = ?
+    `
+
+    //Necessário configurar caso não encontre o registro
+
+    pool.query(
+
+        sql,
+        [cd_convenio, cd_paciente],
+        (err, results, fields) => {
+            console.log(results)
+            res.send('Operação realizada com sucesso !')
+        }
+    )
 })
 
 
