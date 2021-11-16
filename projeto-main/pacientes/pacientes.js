@@ -25,19 +25,12 @@ app.get('/', (req, res) => {
 
 //CADASTRO DE PACIENTE
 app.post('/pacientes/cadastro', (req, res) => {
-    const connection = mysql.createConnection({
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASSWORD,
-        database: DB_DATABASE
-    })
-
     const cpf = req.body.cpf
     const nome = req.body.nome_paciente
     const email = req.body.email
     const senha = req.body.senha
     const sql = `INSERT INTO PACIENTE (CPF_PACIENTE, NM_PACIENTE, EMAIL, SENHA) VALUES (?,?,?,?)`
-    connection.query(
+    pool.query(
         sql,
         [cpf, nome, email, senha], 
         (err, results, fields) => {            
@@ -49,18 +42,11 @@ app.post('/pacientes/cadastro', (req, res) => {
 
 //CONSULTA DE ACORDO UM PACIENTE
 app.get('/pacientes/consulta/:id', (req, res) => {
-    const connection = mysql.createConnection({
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASSWORD,
-        database: DB_DATABASE
-    })
-
     const id_paciente = +req.params.id 
 
     const sql = 'SELECT * FROM PACIENTE WHERE CD_PACIENTE = ?'
 
-    connection.query(
+    pool.query(
         sql,
         [id_paciente], 
         (err, results, fields) => {
@@ -70,19 +56,12 @@ app.get('/pacientes/consulta/:id', (req, res) => {
 })
 
 //CONSULTA TODOS OS PACIENTES
-app.get('/pacientes/consulta', (req, res) => {
-    const connection = mysql.createConnection({
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASSWORD,
-        database: DB_DATABASE
-    })
-
+app.get('/pacientes/consulta', (req, res) => {   
     const id_paciente = +req.params.id 
 
     const sql = 'SELECT * FROM PACIENTE'
 
-    connection.query(
+    pool.query(
         sql,
         [id_paciente], 
         (err, results, fields) => {
@@ -93,12 +72,6 @@ app.get('/pacientes/consulta', (req, res) => {
 
 // CADASTRO DE CONVENIO PARA PACIENTE
 app.post ('/pacientes/convenios/cadastro/:id', (req, res) => {
-    const connection = mysql.createConnection({
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASSWORD,
-        database: DB_DATABASE
-    })
 
     const sql = `
         INSERT INTO PACIENTE_CONVENIO (CD_CONVENIO, CD_PACIENTE) VALUES (?,?)
@@ -110,7 +83,7 @@ app.post ('/pacientes/convenios/cadastro/:id', (req, res) => {
     const cd_convenio = +req.body.cd_convenio
     const carteirinha = req.body.carteirinha
 
-    connection.query(
+    pool.query(
         sql, 
         [cd_convenio, cd_paciente], 
         (err, results, fields) => {
@@ -118,7 +91,7 @@ app.post ('/pacientes/convenios/cadastro/:id', (req, res) => {
         }
     )
 
-    connection.query(
+    pool.query(
         sql2,
         [carteirinha, cd_paciente],
         (err, results, fields) => {
@@ -132,17 +105,10 @@ app.post ('/pacientes/convenios/cadastro/:id', (req, res) => {
 
 //DELETE DE UM PACIENTE
 app.delete ('/pacientes/delete/:id', (req, res) => {
-    const connection = mysql.createConnection({
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASSWORD,
-        database: DB_DATABASE
-    })
-
     const id_paciente = req.params.id
 
     const sql = `DELETE FROM PACIENTE WHERE CD_PACIENTE = ?`
-    connection.query(
+    pool.query(
         sql,
         [id_paciente],
         (err, results, fields) => {
@@ -154,12 +120,6 @@ app.delete ('/pacientes/delete/:id', (req, res) => {
 
 //ATUALIZANDO DADOS DE PACIENTE
 app.put('/pacientes/atualizacao/:id', (req, res) => {
-    const connection = mysql.createConnection({
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASSWORD,
-        database: DB_DATABASE
-    })
 
     const id_paciente = req.params.id
     const novo_nome = req.body.nome_paciente
@@ -177,7 +137,7 @@ app.put('/pacientes/atualizacao/:id', (req, res) => {
     `
 
     if (nova_senha == undefined) {
-        connection.query(
+        pool.query(
             sql,
             [novo_nome, id_paciente],
             (err, results, fields) => {
@@ -187,7 +147,7 @@ app.put('/pacientes/atualizacao/:id', (req, res) => {
         )
     }
     else if (nova_senha != undefined) {
-        connection.query(
+        pool.query(
             sql2,
             [nova_senha, id_paciente],
             (err, results, fields) => {
@@ -201,15 +161,8 @@ app.put('/pacientes/atualizacao/:id', (req, res) => {
 
 
 app.get('/hospitais', (req, res) => {
-    const connection = mysql.createConnection({
-        host: DB_HOST,
-        user: DB_USER,
-        password: DB_PASSWORD,
-        database: DB_DATABASE
-    })
-
     const sql = 'SELECT * FROM HOSPITAL'
-    connection.query(
+    pool.query(
         sql, 
         (err, results, fields) => {
             console.log(results)
