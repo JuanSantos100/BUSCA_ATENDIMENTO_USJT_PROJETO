@@ -1,42 +1,63 @@
+require('dotenv').config()
+const mysql = require('mysql2')
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-let id_convenio = 1
-let convenios = []
+const {DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE} = process.env
 
-//Cadastro de hosptital
-app.post('/convenio/cadastro', (req,res) => {
-    console.log(req.body)
-    
-    const convenio = {
-        id_convenio: id_convenio++,
-        nome_convenio: req.body.nome_convenio,
-        tipo_convenio: req.body.tipo_convenio,
-        registro_ans: req.body.registro_ans,
-    }
-    convenios.push(convenio)
-    res.status(201).json(convenio)
+//pool de conexões
+
+const pool = mysql.createPool({
+    host: DB_HOST,
+    user: DB_USER,
+    database: DB_DATABASE,
+    password: DB_PASSWORD,
+    waitForConnections: true,
+    connectionLimit: 10
 })
 
 
+//CADASTRO DE CONVÊNIO
+app.post('/convenio/cadastro', (req, res) => {
+    const registro_ans = req.body.registro_ans
+    const nome_convenio = req.body.nome_convenio
+    
+    const sql = `
+        INSERT INTO CONVENIO (REGISTRO_ANS, NM_CONVENIO) VALUES (?, ?)
+    `
 
-//Deletar um convenio
+    pool.query(
+        sql,
+        [registro_ans, nome_convenio],
+        (err, results, fields) => {
+            console.log(results)
+            res.send('Operação realizada com sucesso !')
+        }
+
+    )
+})
+
+//EXCLUSÃO DE UM CONVÊNIO BASEADO NO ID
 app.delete('/convenio/delete/:id', (req, res) => {
-    const convenio_id = +req.params.id
-    console.log(convenio_id)
+    const cd_convenio = +req.params.id
 
-    const deleted = convenios.find(convenio => convenio.id_convenio === convenio_id) //Encontrar o id do convenio
-    // console.log(deleted)
-    if (deleted) {
-       convenios = convenios.filter(convenio => convenio.id_convenio !== convenio_id) 
-       res.status(200).json(deleted)
-    } else {
-        
-        res.status(404).json({mensagem: "convenio não encontrado"})
-    }
+    const sql = `
+        DELETE FROM CONVENIO 
+        WHERE CD_CONVENIO = ?
+    `
+
+    pool.query(
+        sql,
+        [cd_convenio],
+        (err, results, fields) => {
+            console.log(results)
+            res.send('Operação realizada com sucesso !')
+        }
+
+    )
 })
 
 //Consulta de convenio
