@@ -8,13 +8,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-    res.send('Meu servidor backend já está online !')
+    // res.send('Meu servidor backend já está online !')
+    return res.json(base_usuarios)
 })
 
 let base_usuarios = [
     {
         email: "juan@hotmail.com",
-        password: "123", 
+        password: "123",
     },
     {
         email: "caetano@hotmail.com",
@@ -43,17 +44,17 @@ let base_usuarios = [
 
 app.post('/login', (req, res) => {
     console.log(req.body)
-    
-    if(base_usuarios.find(usr => usr.email == req.body.email && usr.password == req.body.password)){
+
+    if (base_usuarios.find(usr => usr.email == req.body.email && usr.password == req.body.password)) {
         res.send(response)
         console.log(response)
-    }else{
+    } else {
         res.send(JSON.stringify('ERROR'))
         // res.status(404).send("Usuário ou Senha inválidos")
     }
 })
 
-let porta = process.env.PORT || 3000; 
+let porta = process.env.PORT || 3000;
 
 app.listen(porta, (req, res) => {
     console.log('Server online, porta: ' + porta)

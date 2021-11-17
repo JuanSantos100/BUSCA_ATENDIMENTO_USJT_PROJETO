@@ -22,23 +22,32 @@ export const Login = ({ navigation }) => {
     }
 
     async function enviarLogin() {
-        let response = await fetch('http://192.168.1.66:3000/login', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: textEmail,
-                password: textPassword
-            })
+        try {
+            // let response = await fetch('http://192.168.1.66:3000/login', {
+            //     method: 'POST',
+            //     headers: {
+            //         Accept: 'application/json',
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         email: textEmail,
+            //         password: textPassword
+            //     })
 
-        })
-
-        let json = await response.json()
-        if (json === 'ERROR') {
-            console.log('Erro de usuário')
+            // })
+            let response = await fetch('http://localhost:3000/')
+            const data = await response.json()
+            const check = data.some(el => el.email === textEmail && el.password === textPassword)
+            if (check) Entrar()
+            else navigation.reset({ index: 0, routes: [{ name: "Login" }] })
+        } catch (erro) {
+            console.log(`Erro: ${erro}`)
         }
+
+        // let json = await response.json()
+        // if (json === 'ERROR') {
+        //     console.log('Erro de usuário')
+        // }
     }
 
     return (
@@ -61,7 +70,7 @@ export const Login = ({ navigation }) => {
                 secureTextEntry={true}
             />
 
-            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => Entrar()}>
+            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => enviarLogin()}>
                 Entrar
             </Button>
             <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Registro()}>
