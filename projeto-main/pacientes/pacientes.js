@@ -2,12 +2,16 @@ require('dotenv').config()
 const experss = require('express')
 const bodyParser = require('body-parser')
 const mysql = require('mysql2')
+const axios = require('axios')
 const { restart } = require('nodemon')
 const app = experss()
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 const {DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE} = process.env
+
+const API_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
+const API_KEY = 'AIzaSyAAX8JawpfiXSZIeH8i2bZtWIjlNV8RovQ'
 
 const pool = mysql.createPool({
     host: DB_HOST,
