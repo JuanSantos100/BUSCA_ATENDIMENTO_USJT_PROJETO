@@ -190,8 +190,37 @@ app.get('/hospitais', (req, res) => {
         (err, results, fields) => {
             console.log(results)
             console.log(fields)
-            res.send('ok')
+            res.json(results)
         }
+    )
+})
+
+app.get('/hospitais/convenios', (req, res) => {
+    const cd_convenio = +req.body.cd_convenio
+    console.log(cd_convenio)
+    
+    const sql = `
+    SELECT HOSP.CD_HOSPITAL, 
+    HOSP.NM_HOSPITAL,
+    HOSP.ENDERECO_HOSPITAL,
+    HOSP.CEP,
+    CONV.CD_CONVENIO,
+    CONV.NM_CONVENIO
+    FROM HOSPITAL AS HOSP, CONVENIO AS CONV, HOSPITAL_CONVENIO AS HC
+    WHERE HOSP.CD_HOSPITAL = HC.CD_HOSPITAL
+    AND CONV.CD_CONVENIO = HC.CD_CONVENIO
+    AND CONV.CD_CONVENIO = ?
+    
+    `
+
+    pool.query(
+        sql,
+        [cd_convenio],
+        (err, results, fields) => {
+            console.log(results)
+            res.json(results)
+        }
+
     )
 })
 
