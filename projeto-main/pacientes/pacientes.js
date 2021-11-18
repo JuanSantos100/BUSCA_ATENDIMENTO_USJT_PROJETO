@@ -1,14 +1,16 @@
 require('dotenv').config()
+const cors = require('cors')
 const experss = require('express')
 const bodyParser = require('body-parser')
 const mysql = require('mysql2')
 const axios = require('axios')
 const { restart } = require('nodemon')
 const app = experss()
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-const {DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE} = process.env
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE } = process.env
 
 const API_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
 const API_KEY = 'AIzaSyAAX8JawpfiXSZIeH8i2bZtWIjlNV8RovQ'
@@ -33,11 +35,14 @@ app.post('/pacientes/cadastro', (req, res) => {
     const nome = req.body.nome_paciente
     const email = req.body.email
     const senha = req.body.senha
+
+    console.log(req.body)
+
     const sql = `INSERT INTO PACIENTE (CPF_PACIENTE, NM_PACIENTE, EMAIL, SENHA) VALUES (?,?,?,?)`
     pool.query(
         sql,
-        [cpf, nome, email, senha], 
-        (err, results, fields) => {            
+        [cpf, nome, email, senha],
+        (err, results, fields) => {
             console.log(results)
             res.send('Paciente cadastrado com sucesso')
         }
@@ -46,13 +51,13 @@ app.post('/pacientes/cadastro', (req, res) => {
 
 //CONSULTA DE ACORDO UM PACIENTE
 app.get('/pacientes/consulta/:id', (req, res) => {
-    const id_paciente = +req.params.id 
+    const id_paciente = +req.params.id
 
     const sql = 'SELECT * FROM PACIENTE WHERE CD_PACIENTE = ?'
 
     pool.query(
         sql,
-        [id_paciente], 
+        [id_paciente],
         (err, results, fields) => {
             res.json(results)
         }
@@ -60,14 +65,14 @@ app.get('/pacientes/consulta/:id', (req, res) => {
 })
 
 //CONSULTA TODOS OS PACIENTES
-app.get('/pacientes/consulta', (req, res) => {   
-    const id_paciente = +req.params.id 
+app.get('/pacientes/consulta', (req, res) => {
+    const id_paciente = +req.params.id
 
     const sql = 'SELECT * FROM PACIENTE'
 
     pool.query(
         sql,
-        [id_paciente], 
+        [id_paciente],
         (err, results, fields) => {
             res.json(results)
         }
@@ -75,7 +80,7 @@ app.get('/pacientes/consulta', (req, res) => {
 })
 
 // CADASTRO DE CONVENIO PARA PACIENTE
-app.post ('/pacientes/convenios/cadastro/:id', (req, res) => {
+app.post('/pacientes/convenios/cadastro/:id', (req, res) => {
 
     // const sql = `
     //     INSERT INTO PACIENTE_CONVENIO (CD_CONVENIO, CD_PACIENTE) VALUES (?,?)
@@ -95,21 +100,21 @@ app.post ('/pacientes/convenios/cadastro/:id', (req, res) => {
     console.log(cd_convenio, cd_paciente, carteirinha)
 
     pool.query(
-        sql, 
-        [cd_convenio, cd_paciente, carteirinha], 
+        sql,
+        [cd_convenio, cd_paciente, carteirinha],
         (err, results, fields) => {
             console.log(results)
             res.send('Operação realizada com sucesso !')
         }
     )
-        
+
 })
 
 //EXCLUSÃO DE CARTEIRINHA PARA O PACIENTE
 app.delete('/pacientes/convenios/delete/:id', (req, res) => {
     const cd_paciente = +req.params.id
     const cd_convenio = +req.body.cd_convenio
-    
+
     const sql = `
         DELETE FROM PACIENTE_CONVENIO
         WHERE CD_CONVENIO = ?
@@ -131,7 +136,7 @@ app.delete('/pacientes/convenios/delete/:id', (req, res) => {
 
 
 //DELETE DE UM PACIENTE
-app.delete ('/pacientes/delete/:id', (req, res) => {
+app.delete('/pacientes/delete/:id', (req, res) => {
     const id_paciente = req.params.id
 
     const sql = `DELETE FROM PACIENTE WHERE CD_PACIENTE = ?`
@@ -190,7 +195,7 @@ app.put('/pacientes/atualizacao/:id', (req, res) => {
 app.get('/hospitais', (req, res) => {
     const sql = 'SELECT * FROM HOSPITAL'
     pool.query(
-        sql, 
+        sql,
         (err, results, fields) => {
             console.log(results)
             console.log(fields)
@@ -202,7 +207,7 @@ app.get('/hospitais', (req, res) => {
 app.get('/hospitais/convenios', (req, res) => {
     const cd_convenio = +req.body.cd_convenio
     console.log(cd_convenio)
-    
+
     const sql = `
     SELECT HOSP.CD_HOSPITAL, 
     HOSP.NM_HOSPITAL,

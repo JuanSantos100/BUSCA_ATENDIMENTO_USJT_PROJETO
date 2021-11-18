@@ -23,6 +23,29 @@ export const Registro = ({ navigation }) => {
         })
     }
 
+    async function registrar() {
+        try {
+            let response = await fetch('http://localhost:3021/pacientes/cadastro', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cpf: textDocumento,
+                    data_nascimento: textNascimento,
+                    nome_paciente: textNome,
+                    email: textEmail,
+                    senha: textPassword
+                })
+            })
+            if (response) Login()
+            else navigation.reset({ index: 0, routes: [{ name: "Registro" }] })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <Surface style={styles.surface}>
             <Avatar.Text style={styles.iconApp} size={24} label="" />
@@ -66,7 +89,7 @@ export const Registro = ({ navigation }) => {
                 onChangeText={textPassword => setTextPassword(textPassword)}
             />
 
-            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => Entrar()}>
+            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => registrar()}>
                 Criar Conta
             </Button>
             <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Login()}>
