@@ -35,7 +35,7 @@ export const Login = ({ navigation }) => {
             //     })
 
             // })
-            let response = await fetch('http://localhost:3000/')
+            let response = await fetch('http://localhost:3000/login')
             const data = await response.json()
             const check = data.some(el => el.email === textEmail && el.password === textPassword)
             if (check) Entrar()
