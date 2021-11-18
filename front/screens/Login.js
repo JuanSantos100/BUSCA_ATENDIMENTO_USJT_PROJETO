@@ -23,22 +23,22 @@ export const Login = ({ navigation }) => {
 
     async function enviarLogin() {
         try {
-            // let response = await fetch('http://192.168.1.66:3000/login', {
-            //     method: 'POST',
-            //     headers: {
-            //         Accept: 'application/json',
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         email: textEmail,
-            //         password: textPassword
-            //     })
+            let response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: textEmail,
+                    password: textPassword
+                })
 
-            // })
-            let response = await fetch('http://localhost:3000/login')
-            const data = await response.json()
-            const check = data.some(el => el.email === textEmail && el.password === textPassword)
-            if (check) Entrar()
+            })
+            // let response = await fetch('http://localhost:3000/login')
+            // const data = await response.json()
+            // const check = data.some(el => el.email === textEmail && el.password === textPassword)
+            if (response) Entrar()
             else navigation.reset({ index: 0, routes: [{ name: "Login" }] })
         } catch (erro) {
             console.log(`Erro: ${erro}`)

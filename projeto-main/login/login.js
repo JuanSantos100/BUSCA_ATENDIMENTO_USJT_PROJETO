@@ -44,22 +44,22 @@ app.get('/', (req, res) => {
 
 
 
-let base_usuarios = [
-    {
-        email: "juan@hotmail.com",
-        password: "123",
-    },
-    {
-        email: "caetano@hotmail.com",
-        password: "456"
-    }
-]
+// let base_usuarios = [
+//     {
+//         email: "juan@hotmail.com",
+//         password: "123",
+//     },
+//     {
+//         email: "caetano@hotmail.com",
+//         password: "456"
+//     }
+// ]
 
-app.get('/login', (req, res) => {
+app.post('/login', (req, res) => {
     
     const email = req.body.email
     // console.log(email)
-    const senha = req.body.senha
+    const password = req.body.password
     const sql = 
     `
         SELECT EMAIL, SENHA FROM PACIENTE WHERE EMAIL = ?
@@ -68,9 +68,11 @@ app.get('/login', (req, res) => {
         sql,
         [email],
         (errors, results, fields) => {
-            if (errors) {
+            if(errors) {
                 console.log(errors)
             }
+
+            console.log(results)
 
             /*
             Pegando valores do results
@@ -79,15 +81,20 @@ app.get('/login', (req, res) => {
             // console.log(results[0]['SENHA'])
             */
 
-            //Erro nesta seção de código !! Mensagem: Cannot read property 'EMAIL' of undefined
-            //Observar a tela \PROJETO\front\screens\Login.js 
-            if(results[0]['EMAIL'] == email && results[0]['SENHA'] == senha) {
-                console.log('Logado!')
-                return res.json(results)
+            //Necessário verificar quando os dados do paciente não baterem com o banco -> Gera erros 
+
+            if (results !== []) {
+                if(results[0]['EMAIL'] == email && results[0]['SENHA'] == password) {                    
+                    console.log('Usuário Logado!')
+                    return res.json(results)
+                } else {
+                    console.log('Tentativa de login falhou ! Usuário ou senha inválidos')
+                    return res.send(JSON.stringify('Tentativa de login falhou ! Usuário ou senha inválidos'))
+                } 
+
             } else {
-                console.log('Tentativa de login falhou ! Usuário ou senha inválidos')
-                return res.send(JSON.stringify('Tentativa de login falhou ! Usuário ou senha inválidos'))
-            } 
+                return res.send('Usuário não encontrado !')
+            }
         
         }
     )
