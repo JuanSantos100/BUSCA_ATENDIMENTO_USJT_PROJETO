@@ -12,9 +12,6 @@ app.use(bodyParser.json())
 
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE } = process.env
 
-const API_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
-const API_KEY = 'AIzaSyAAX8JawpfiXSZIeH8i2bZtWIjlNV8RovQ'
-
 const pool = mysql.createPool({
     host: DB_HOST,
     user: DB_USER,
