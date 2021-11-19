@@ -37,7 +37,8 @@ export const Login = ({ navigation }) => {
             })
             // let response = await fetch('http://localhost:3000/login')
             // const data = await response.json()
-            // const check = data.some(el => el.email === textEmail && el.password === textPassword)
+            // console.log(data)
+            // const check = data.some(el => el.body.email === textEmail && el.body.password === textPassword)
             if (response) Entrar()
             else navigation.reset({ index: 0, routes: [{ name: "Login" }] })
         } catch (erro) {

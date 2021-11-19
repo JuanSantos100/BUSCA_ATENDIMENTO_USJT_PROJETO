@@ -42,24 +42,13 @@ app.get('/', (req, res) => {
     return res.json(base_usuarios)
 })
 
-
-
-// let base_usuarios = [
-//     {
-//         email: "juan@hotmail.com",
-//         password: "123",
-//     },
-//     {
-//         email: "caetano@hotmail.com",
-//         password: "456"
-//     }
-// ]
-
+//Serviço de login !
 app.post('/login', (req, res) => {
     
     const email = req.body.email
-    // console.log(email)
+
     const password = req.body.password
+
     const sql = 
     `
         SELECT EMAIL, SENHA FROM PACIENTE WHERE EMAIL = ?
@@ -74,62 +63,24 @@ app.post('/login', (req, res) => {
 
             console.log(results)
 
-            /*
-            Pegando valores do results
-
-            // console.log(results[0]['EMAIL'])
-            // console.log(results[0]['SENHA'])
-            */
-
+            
             //Necessário verificar quando os dados do paciente não baterem com o banco -> Gera erros 
-
-            if (results !== []) {
+            try {
                 if(results[0]['EMAIL'] == email && results[0]['SENHA'] == password) {                    
                     console.log('Usuário Logado!')
                     return res.json(results)
                 } else {
                     console.log('Tentativa de login falhou ! Usuário ou senha inválidos')
-                    return res.send(JSON.stringify('Tentativa de login falhou ! Usuário ou senha inválidos'))
+                    return res.status(403).send(JSON.stringify('Tentativa de login falhou ! Usuário ou senha inválidos'))
                 } 
-
-            } else {
-                return res.send('Usuário não encontrado !')
+                
+            } catch (error) {
+                console.log(error)
             }
         
         }
     )
 })
-
-
-// app.post('/login', (req, res) => {
-//     // console.log(req.body);
-//     // console.log('Email: ' + base_usuarios.email);
-//     // console.log('Password: ' + base_usuarios.password);
-//     for(let x = 0; x < base_usuarios.length; x++) {
-//         if (req.body.email == base_usuarios.email) { //Verificação de usuário
-//             if(req.body.password == base_usuarios.password) { //Verificação da senha
-//                 res.status(200).send('Seja bem vindo ' + req.body.email)
-//             } else {
-//                 res.status(401).send("Usuário ou senha incorreta")
-//                 console.log('Usuário ou senha incorreta')
-//             }
-//         } else {
-//             res.status(404).send("Usuário não existe")
-//         }
-//     }
-// })
-
-// app.post('/login', (req, res) => {
-//     console.log(req.body)
-
-//     if (base_usuarios.find(usr => usr.email == req.body.email && usr.password == req.body.password)) {
-//         res.send(response)
-//         console.log(response)
-//     } else {
-//         res.send(JSON.stringify('ERROR'))
-//         // res.status(404).send("Usuário ou Senha inválidos")
-//     }
-// })
 
 let porta = process.env.PORT || 3000;
 

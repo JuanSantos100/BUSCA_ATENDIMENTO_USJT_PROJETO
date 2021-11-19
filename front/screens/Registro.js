@@ -82,11 +82,12 @@ export const Registro = ({ navigation }) => {
             />
 
             <TextInput
-                style={styles.input}
+                style={styles.input}  
                 label="Password"
                 mode="outlined"
                 value={textPassword}
                 onChangeText={textPassword => setTextPassword(textPassword)}
+                secureTextEntry={true}
             />
 
             <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => registrar()}>

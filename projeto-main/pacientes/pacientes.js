@@ -204,6 +204,7 @@ app.get('/hospitais', (req, res) => {
     )
 })
 
+//Listagem de hospitais que atendem o convênio do paciente
 app.get('/hospitais/convenios', (req, res) => {
     const cd_convenio = +req.body.cd_convenio
     console.log(cd_convenio)
@@ -227,7 +228,7 @@ app.get('/hospitais/convenios', (req, res) => {
         [cd_convenio],
         (err, results, fields) => {
             console.log(results)
-            res.json(results)
+            return res.json(results)
         }
 
     )
