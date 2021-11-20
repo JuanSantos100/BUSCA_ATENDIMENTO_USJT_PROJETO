@@ -1,12 +1,13 @@
 import React from 'react';
 import { TextInput, Button, Surface } from 'react-native-paper';
 import { PaperSelect } from 'react-native-paper-select';
-import { StyleSheet,ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 export const Hospitalregistro = ({ navigation }) => {
     const [textNome, setTextNome] = React.useState('');
     const [textCep, setTextCep] = React.useState('');
     const [textLogradouro, setTextLogradouro] = React.useState('');
+    const [textNumero, setTextNumero] = React.useState('');
     const [textBairro, setTextBairro] = React.useState('');
     const [textCidade, setTextCidade] = React.useState('');
     const [textUf, setTextUf] = React.useState('');
@@ -37,6 +38,32 @@ export const Hospitalregistro = ({ navigation }) => {
         })
     }
 
+    fetch(`https://viacep.com.br/ws/${textCep}/json/`, { method: 'GET', mode: 'cors', cache: 'default' })
+        .then(response => {
+            response.json()
+                .then(data => showData(data))
+        })
+        .catch(e => console.log(e))
+
+    const showData = async (result) => {
+        for (const campo in result) {
+            switch (campo) {
+                case "logradouro":
+                    setTextLogradouro(result[campo])
+                    break;
+                case "bairro":
+                    setTextBairro(result[campo])
+                    break;
+                case "localidade":
+                    setTextCidade(result[campo])
+                    break;
+                case "uf":
+                    setTextUf(result[campo])
+                    break;
+            }
+        }
+    }
+
     async function registrar() {
         try {
             let response = await fetch('http://localhost:3001/hospital/cadastro', {
@@ -49,6 +76,7 @@ export const Hospitalregistro = ({ navigation }) => {
                     nome_hospital: textNome,
                     cep: textCep,
                     logradouro: textLogradouro,
+                    numero: textNumero,
                     bairro: textBairro,
                     cidade: textCidade,
                     uf: textUf
@@ -63,76 +91,84 @@ export const Hospitalregistro = ({ navigation }) => {
 
     return (
         <ScrollView>
-        <Surface style={styles.surface}>
-            <TextInput
-                style={styles.input}
-                label="Nome do Hospital"
-                mode="outlined"
-                value={textNome}
-                onChangeText={textNome => setTextNome(textNome)}
-            />
+            <Surface style={styles.surface}>
+                <TextInput
+                    style={styles.input}
+                    label="Nome do Hospital"
+                    mode="outlined"
+                    value={textNome}
+                    onChangeText={textNome => setTextNome(textNome)}
+                />
 
-            <TextInput
-                style={styles.input}
-                label="CEP"
-                mode="outlined"
-                value={textCep}
-                onChangeText={textCep => setTextCep(textCep)}
-            />
+                <TextInput
+                    style={styles.input}
+                    label="CEP"
+                    mode="outlined"
+                    value={textCep}
+                    onChangeText={textCep => setTextCep(textCep)}
+                />
 
-            <TextInput
-                style={styles.input}
-                label="Logradouro"
-                mode="outlined"
-                value={textLogradouro}
-                onChangeText={textLogradouro => setTextLogradouro(textLogradouro)}
-            />
+                <TextInput
+                    style={styles.input}
+                    label="Logradouro"
+                    mode="outlined"
+                    value={textLogradouro}
+                    onChangeText={textLogradouro => setTextLogradouro(textLogradouro)}
+                />
 
-            <TextInput
-                style={styles.input}
-                label="Bairro"
-                mode="outlined"
-                value={textBairro}
-                onChangeText={textBairro => setTextBairro(textBairro)}
-            />
+                <TextInput
+                    style={styles.input}
+                    label="Numero"
+                    mode="outlined"
+                    value={textNumero}
+                    onChangeText={textNumero => setTextNumero(textNumero)}
+                />
 
-            <TextInput
-                style={styles.input}
-                label="Cidade"
-                mode="outlined"
-                value={textCidade}
-                onChangeText={textCidade => setTextCidade(textCidade)}
-            />
+                <TextInput
+                    style={styles.input}
+                    label="Bairro"
+                    mode="outlined"
+                    value={textBairro}
+                    onChangeText={textBairro => setTextBairro(textBairro)}
+                />
 
-            <TextInput
-                style={styles.input}
-                label="UF"
-                mode="outlined"
-                value={textUf}
-                onChangeText={textUf => setTextUf(textUf)}
-            />
+                <TextInput
+                    style={styles.input}
+                    label="Cidade"
+                    mode="outlined"
+                    value={textCidade}
+                    onChangeText={textCidade => setTextCidade(textCidade)}
+                />
 
-            <PaperSelect
-                label="Conveio"
-                value={convenio.value}
-                onSelection={(value) => {
-                    setConvenio({
-                        ...convenio,
-                        value: value.text,
-                        selectedList: value.selectedList,
-                        error: '',
-                    });
-                }}
-                arrayList={[...convenio.list]}
-                selectedArrayList={convenio.selectedList}
-                error={!!convenio.error}
-                errorText={convenio.error}
-                multiEnable={true}
-            />
-            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => registrar()}>
-                Cadastrar Hospital
-            </Button>
-        </Surface>
+                <TextInput
+                    style={styles.input}
+                    label="UF"
+                    mode="outlined"
+                    value={textUf}
+                    onChangeText={textUf => setTextUf(textUf)}
+                />
+
+                <PaperSelect
+                    label="Conveio"
+                    value={convenio.value}
+                    onSelection={(value) => {
+                        setConvenio({
+                            ...convenio,
+                            value: value.text,
+                            selectedList: value.selectedList,
+                            error: '',
+                        });
+                    }}
+                    arrayList={[...convenio.list]}
+                    selectedArrayList={convenio.selectedList}
+                    error={!!convenio.error}
+                    errorText={convenio.error}
+                    multiEnable={true}
+                />
+                <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => registrar()}>
+                    Cadastrar Hospital
+                </Button>
+            </Surface>
         </ScrollView>
     )
 }
