@@ -1,6 +1,7 @@
 import React from 'react';
-import { TextInput, Avatar, Button, Surface, Checkbox } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
+import { TextInput, Button, Surface } from 'react-native-paper';
+import { PaperSelect } from 'react-native-paper-select';
+import { StyleSheet,ScrollView } from 'react-native';
 
 export const Hospitalregistro = ({ navigation }) => {
     const [textNome, setTextNome] = React.useState('');
@@ -9,8 +10,19 @@ export const Hospitalregistro = ({ navigation }) => {
     const [textBairro, setTextBairro] = React.useState('');
     const [textCidade, setTextCidade] = React.useState('');
     const [textUf, setTextUf] = React.useState('');
-    // const [checkedConvenio, setCheckedConvenio] = React.useState('');
-
+    const [convenio, setConvenio] = React.useState({
+        value: '',
+        list: [
+            { _id: '1', value: 'Santander' },
+            { _id: '2', value: 'Amil' },
+            { _id: '3', value: 'Sul America' },
+            { _id: '4', value: 'Bradesco Saúde' },
+            { _id: '5', value: 'Porto Seguro' },
+            { _id: '6', value: 'Unimed' }
+        ],
+        selectedList: [],
+        error: '',
+    });
     const Entrar = () => {
         navigation.reset({
             index: 0,
@@ -50,8 +62,8 @@ export const Hospitalregistro = ({ navigation }) => {
     }
 
     return (
+        <ScrollView>
         <Surface style={styles.surface}>
-            <Avatar.Text style={styles.iconApp} size={24} label="" />
             <TextInput
                 style={styles.input}
                 label="Nome do Hospital"
@@ -90,7 +102,6 @@ export const Hospitalregistro = ({ navigation }) => {
                 mode="outlined"
                 value={textCidade}
                 onChangeText={textCidade => setTextCidade(textCidade)}
-                secureTextEntry={true}
             />
 
             <TextInput
@@ -99,16 +110,30 @@ export const Hospitalregistro = ({ navigation }) => {
                 mode="outlined"
                 value={textUf}
                 onChangeText={textUf => setTextUf(textUf)}
-                secureTextEntry={true}
             />
 
+            <PaperSelect
+                label="Conveio"
+                value={convenio.value}
+                onSelection={(value) => {
+                    setConvenio({
+                        ...convenio,
+                        value: value.text,
+                        selectedList: value.selectedList,
+                        error: '',
+                    });
+                }}
+                arrayList={[...convenio.list]}
+                selectedArrayList={convenio.selectedList}
+                error={!!convenio.error}
+                errorText={convenio.error}
+                multiEnable={true}
+            />
             <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => registrar()}>
                 Cadastrar Hospital
             </Button>
-            <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Login()}>
-                Voltar
-            </Button>
         </Surface>
+        </ScrollView>
     )
 }
 

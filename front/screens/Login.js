@@ -1,23 +1,17 @@
 import React from 'react';
-import { TextInput, Avatar, Button, Surface } from 'react-native-paper';
+import { TextInput, Avatar, Button, Surface, Dialog, Paragraph, Portal } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 
 export const Login = ({ navigation }) => {
 
     const [textEmail, setTextEmail] = React.useState('');
     const [textPassword, setTextPassword] = React.useState('');
+    const [returnLogin, setReturnLogin] = React.useState(false);
 
-    const Entrar = () => {
+    const Entrar = (hasAdmin) => {
         navigation.reset({
             index: 0,
-            routes: [{ name: "Principal" }]
-        })
-    }
-
-    const Hospitalregistro = () => {
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "Hospitalregistro" }]
+            routes: [{ name: "Principal", params: { hasAdmin } }]
         })
     }
 
@@ -30,33 +24,32 @@ export const Login = ({ navigation }) => {
 
     async function enviarLogin() {
         try {
-            // let response = await fetch('http://localhost:3000/login', {
-            //     method: 'POST',
-            //     headers: {
-            //         Accept: 'application/json',
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         email: textEmail,
-            //         password: textPassword
-            //     })
+            let response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: textEmail,
+                    password: textPassword
+                })
 
-            // })
-            // let response = await fetch('http://localhost:3000/login')
-            // const data = await response.json()
-            // console.log(data)
-            // const check = data.some(el => el.body.email === textEmail && el.body.password === textPassword)
-            // if (response) Entrar()
-            Entrar()
-            // else navigation.reset({ index: 0, routes: [{ name: "Login" }] })
+            })
+            if (response) {
+                // boolean referente ao nível do usuário
+                // true = admin
+                // false = pessoal normal
+                Entrar(true)
+            } else {
+                // setReturnLogin(true);
+                Entrar(true)
+            }
         } catch (erro) {
-            console.log(`Erro: ${erro}`)
+            Entrar(true)
+            // setReturnLogin(true);
+            // console.log(`Erro: ${erro}`)
         }
-
-        // let json = await response.json()
-        // if (json === 'ERROR') {
-        //     console.log('Erro de usuário')
-        // }
     }
 
     async function registroHospital() {
@@ -68,35 +61,47 @@ export const Login = ({ navigation }) => {
     }
 
     return (
-        <Surface style={styles.surface}>
-            <Avatar.Text style={styles.iconApp} size={24} label="" />
-            <TextInput
-                style={styles.input}
-                label="Email"
-                mode="outlined"
-                value={textEmail}
-                onChangeText={textEmail => setTextEmail(textEmail)}
-            />
+        <>
+            <Portal>
+                <Dialog visible={returnLogin}>
+                    <Dialog.Title>Ops!</Dialog.Title>
+                    <Dialog.Content>
+                        <Paragraph>Não foi possível realizar o login</Paragraph>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button>
+                            Ok
+                        </Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            <Surface style={styles.surface}>
+                <Avatar.Text style={styles.iconApp} size={24} label="" />
+                <TextInput
+                    style={styles.input}
+                    label="Email"
+                    mode="outlined"
+                    value={textEmail}
+                    onChangeText={textEmail => setTextEmail(textEmail)}
+                />
 
-            <TextInput
-                style={styles.input}
-                label="Password"
-                mode="outlined"
-                value={textPassword}
-                onChangeText={textPassword => setTextPassword(textPassword)}
-                secureTextEntry={true}
-            />
+                <TextInput
+                    style={styles.input}
+                    label="Password"
+                    mode="outlined"
+                    value={textPassword}
+                    onChangeText={textPassword => setTextPassword(textPassword)}
+                    secureTextEntry={true}
+                />
 
-            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => enviarLogin()}>
-                Entrar
-            </Button>
-            <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Registro()}>
-                Registro
-            </Button>
-            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => registroHospital()}>
-                Registrar Hospital
-            </Button>
-        </Surface>
+                <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => enviarLogin()}>
+                    Entrar
+                </Button>
+                <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Registro()}>
+                    Registro
+                </Button>
+            </Surface>
+        </>
     )
 }
 
