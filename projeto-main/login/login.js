@@ -1,6 +1,6 @@
 const express = require('express');
 require('dotenv').config()
-const mysql =  require('mysql2')
+const mysql = require('mysql2')
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { response } = require('express');
@@ -44,40 +44,40 @@ app.get('/', (req, res) => {
 
 //Serviço de login !
 app.post('/login', (req, res) => {
-    
+
     const email = req.body.email
 
     const password = req.body.password
 
-    const sql = 
-    `
+    const sql =
+        `
         SELECT EMAIL, SENHA FROM PACIENTE WHERE EMAIL = ?
     `
     pool.query(
         sql,
         [email],
         (errors, results, fields) => {
-            if(errors) {
+            if (errors) {
                 console.log(errors)
             }
 
             console.log(results)
 
-            
+
             //Necessário verificar quando os dados do paciente não baterem com o banco -> Gera erros 
             try {
-                if(results[0]['EMAIL'] == email && results[0]['SENHA'] == password) {                    
+                if (results[0]['EMAIL'] == email && results[0]['SENHA'] == password) {
                     console.log('Usuário Logado!')
                     return res.json(results)
                 } else {
                     console.log('Tentativa de login falhou ! Usuário ou senha inválidos')
                     return res.status(403).send(JSON.stringify('Tentativa de login falhou ! Usuário ou senha inválidos'))
-                } 
-                
+                }
+
             } catch (error) {
                 console.log(error)
             }
-        
+
         }
     )
 })

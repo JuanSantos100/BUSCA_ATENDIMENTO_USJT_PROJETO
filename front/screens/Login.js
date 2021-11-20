@@ -14,6 +14,13 @@ export const Login = ({ navigation }) => {
         })
     }
 
+    const Hospitalregistro = () => {
+        navigation.reset({
+            index: 0,
+            routes: [{ name: "Hospitalregistro" }]
+        })
+    }
+
     const Registro = () => {
         navigation.reset({
             index: 0,
@@ -23,24 +30,25 @@ export const Login = ({ navigation }) => {
 
     async function enviarLogin() {
         try {
-            let response = await fetch('http://localhost:3000/login', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: textEmail,
-                    password: textPassword
-                })
+            // let response = await fetch('http://localhost:3000/login', {
+            //     method: 'POST',
+            //     headers: {
+            //         Accept: 'application/json',
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         email: textEmail,
+            //         password: textPassword
+            //     })
 
-            })
+            // })
             // let response = await fetch('http://localhost:3000/login')
             // const data = await response.json()
             // console.log(data)
             // const check = data.some(el => el.body.email === textEmail && el.body.password === textPassword)
-            if (response) Entrar()
-            else navigation.reset({ index: 0, routes: [{ name: "Login" }] })
+            // if (response) Entrar()
+            Entrar()
+            // else navigation.reset({ index: 0, routes: [{ name: "Login" }] })
         } catch (erro) {
             console.log(`Erro: ${erro}`)
         }
@@ -49,6 +57,14 @@ export const Login = ({ navigation }) => {
         // if (json === 'ERROR') {
         //     console.log('Erro de usuário')
         // }
+    }
+
+    async function registroHospital() {
+        try {
+            Hospitalregistro()
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -76,6 +92,9 @@ export const Login = ({ navigation }) => {
             </Button>
             <Button style={styles.buttonOutlined} mode="outlined" onPress={() => Registro()}>
                 Registro
+            </Button>
+            <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => registroHospital()}>
+                Registrar Hospital
             </Button>
         </Surface>
     )
