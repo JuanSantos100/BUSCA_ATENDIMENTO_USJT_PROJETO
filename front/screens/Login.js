@@ -36,18 +36,33 @@ export const Login = ({ navigation }) => {
                 })
 
             })
-            if (response) {
+
+            // response.then((response) => {
+            //     console.log(response)
+            // })
+
+            const data = await response.json()
+            console.log(data)
+            console.log(data[0]['SN_ADMIN'])
+
+            if (response && data[0]['SN_ADMIN'] === 'S') {
                 // boolean referente ao nível do usuário
                 // true = admin
                 // false = pessoal normal
+                
                 Entrar(true)
-            } else {
-                // setReturnLogin(true);
-                Entrar(true)
+
+            } else if (response && data[0]['SN_ADMIN'] === 'N') {
+                Entrar(false)
+            } 
+            
+            else {
+                setReturnLogin(true);
+                // Entrar(false)
             }
         } catch (erro) {
-            Entrar(true)
-            // setReturnLogin(true);
+            // Entrar(false)
+            setReturnLogin(true);
             // console.log(`Erro: ${erro}`)
         }
     }
@@ -66,10 +81,10 @@ export const Login = ({ navigation }) => {
                 <Dialog visible={returnLogin}>
                     <Dialog.Title>Ops!</Dialog.Title>
                     <Dialog.Content>
-                        <Paragraph>Não foi possível realizar o login</Paragraph>
+                        <Paragraph>Usuário ou senha incorretos !</Paragraph>
                     </Dialog.Content>
                     <Dialog.Actions>
-                        <Button>
+                        <Button onPress={() => setReturnLogin(false)}>
                             Ok
                         </Button>
                     </Dialog.Actions>

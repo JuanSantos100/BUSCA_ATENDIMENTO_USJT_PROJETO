@@ -11,19 +11,19 @@ export const Hospitalregistro = ({ navigation }) => {
     const [textBairro, setTextBairro] = React.useState('');
     const [textCidade, setTextCidade] = React.useState('');
     const [textUf, setTextUf] = React.useState('');
-    const [convenio, setConvenio] = React.useState({
-        value: '',
-        list: [
-            { _id: '1', value: 'Santander' },
-            { _id: '2', value: 'Amil' },
-            { _id: '3', value: 'Sul America' },
-            { _id: '4', value: 'Bradesco Saúde' },
-            { _id: '5', value: 'Porto Seguro' },
-            { _id: '6', value: 'Unimed' }
-        ],
-        selectedList: [],
-        error: '',
-    });
+    // const [convenio, setConvenio] = React.useState({
+    //     value: '',
+    //     list: [
+    //         { _id: '1', value: 'Santander' },
+    //         { _id: '2', value: 'Amil' },
+    //         { _id: '3', value: 'Sul America' },
+    //         { _id: '4', value: 'Bradesco Saúde' },
+    //         { _id: '5', value: 'Porto Seguro' },
+    //         { _id: '6', value: 'Unimed' }
+    //     ],
+    //     selectedList: [],
+    //     error: '',
+    // });
     const Entrar = () => {
         navigation.reset({
             index: 0,
@@ -38,12 +38,17 @@ export const Hospitalregistro = ({ navigation }) => {
         })
     }
 
-    fetch(`https://viacep.com.br/ws/${textCep}/json/`, { method: 'GET', mode: 'cors', cache: 'default' })
-        .then(response => {
-            response.json()
-                .then(data => showData(data))
-        })
-        .catch(e => console.log(e))
+    //api cep
+    const findCep = (valueCep) => {
+        valueCep = valueCep?.replace('-', '')
+        if (valueCep?.length >= 8) {
+            fetch(`https://viacep.com.br/ws/${valueCep}/json/`, { method: 'GET', mode: 'cors', cache: 'default' })
+            .then(response => {
+                response.json()
+                    .then(data => showData(data))
+            })
+            .catch(e => console.log(e))}
+        }  
 
     const showData = async (result) => {
         for (const campo in result) {
@@ -66,7 +71,7 @@ export const Hospitalregistro = ({ navigation }) => {
 
     async function registrar() {
         try {
-            let response = await fetch('http://localhost:3001/hospital/cadastro', {
+            let response = await fetch('http://localhost:3012/hospital/cadastro', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -75,19 +80,17 @@ export const Hospitalregistro = ({ navigation }) => {
                 body: JSON.stringify({
                     nome_hospital: textNome,
                     cep: textCep,
-                    logradouro: textLogradouro,
-                    numero: textNumero,
-                    bairro: textBairro,
-                    cidade: textCidade,
-                    uf: textUf
+                    endereco_hospital: `${textLogradouro},  ${textNumero}, ${textBairro}, ${textCidade} - ${textUf}`
                 })
             })
-            if (response) Login()
-            else navigation.reset({ index: 0, routes: [{ name: "Registro" }] })
+            console.log(response)
+            // if (response) Login()
+            // else navigation.reset({ index: 0, routes: [{ name: "Registro" }] })
         } catch (error) {
             console.log(error)
         }
     }
+
 
     return (
         <ScrollView>
@@ -105,7 +108,11 @@ export const Hospitalregistro = ({ navigation }) => {
                     label="CEP"
                     mode="outlined"
                     value={textCep}
-                    onChangeText={textCep => setTextCep(textCep)}
+                    onChangeText={(textCep) => { 
+                        findCep(textCep)
+                        setTextCep(textCep)}
+
+                    }
                 />
 
                 <TextInput
@@ -148,7 +155,7 @@ export const Hospitalregistro = ({ navigation }) => {
                     onChangeText={textUf => setTextUf(textUf)}
                 />
 
-                <PaperSelect
+                {/* <PaperSelect
                     label="Conveio"
                     value={convenio.value}
                     onSelection={(value) => {
@@ -164,7 +171,7 @@ export const Hospitalregistro = ({ navigation }) => {
                     error={!!convenio.error}
                     errorText={convenio.error}
                     multiEnable={true}
-                />
+                /> */}
                 <Button labelStyle={{ color: '#FFFFFF' }} style={styles.button} mode="contained" onPress={() => registrar()}>
                     Cadastrar Hospital
                 </Button>

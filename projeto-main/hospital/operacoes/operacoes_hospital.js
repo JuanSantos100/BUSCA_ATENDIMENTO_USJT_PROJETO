@@ -1,10 +1,12 @@
 require('dotenv').config()
 const mysql = require('mysql2')
+const cors = require('cors')
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cors())
 
 const {DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE} = process.env
 
@@ -23,18 +25,18 @@ app.post('/hospital/cadastro', (req, res) => {
     const nome_hospital = req.body.nome_hospital
     const cep = req.body.cep
     const endereco_hospital = req.body.endereco_hospital
-    const qtd_leitos = req.body.qtd_leitos_disponiveis
-    const capacidade_atendimento = req.body.capacidade_atendimento
+
+    console.log(nome_hospital, cep, endereco_hospital)
 
     const sql = `
-        INSERT INTO HOSPITAL (NM_HOSPITAL, CEP, ENDERECO_HOSPITAL, QTD_LEITOS, CPD_ATENDIMENTO) VALUES (?, ?, ?, ? , ?)
+        INSERT INTO HOSPITAL (NM_HOSPITAL, CEP, ENDERECO_HOSPITAL) VALUES (?, ?, ?)
     `
     pool.query(
         sql,
-        [nome_hospital, cep, endereco_hospital, qtd_leitos, capacidade_atendimento],
+        [nome_hospital, cep, endereco_hospital],
         (err, resuls, fields) => {
             console.log(resuls)
-            res.send('Operação realizada com sucesso !')
+            res.status(200)
         }
     )
 })
@@ -113,13 +115,13 @@ app.put('/hospital/atualizacao/:id', (req, res) => {
         [qtd_leitos, capacidade_atendimento, cd_hospital],
         (err, results, fields) => {
             console.log(results)
-            res.send('Operação realizada com sucesso !')        
+            res.status(200)      
         }
 
     )
 })
 
 
-app.listen(3001, () => {
-    console.log('Microserviço de hospitais - Hospital rodando na porta 3001')
+app.listen(3012, () => {
+    console.log('Microserviço de hospitais - Hospital rodando na porta 3012')
 })

@@ -49,9 +49,11 @@ app.post('/login', (req, res) => {
 
     const password = req.body.password
 
+    // console.log(email, password)
+
     const sql =
         `
-        SELECT EMAIL, SENHA FROM PACIENTE WHERE EMAIL = ?
+        SELECT EMAIL, SENHA, SN_ADMIN FROM PACIENTE WHERE EMAIL = ?
     `
     pool.query(
         sql,
@@ -61,17 +63,19 @@ app.post('/login', (req, res) => {
                 console.log(errors)
             }
 
+            console.log('passou')
+
             console.log(results)
 
 
             //Necessário verificar quando os dados do paciente não baterem com o banco -> Gera erros 
             try {
-                if (results[0]['EMAIL'] == email && results[0]['SENHA'] == password) {
+                if (results[0]?.EMAIL == email && results[0]?.SENHA == password) {
                     console.log('Usuário Logado!')
                     return res.json(results)
                 } else {
                     console.log('Tentativa de login falhou ! Usuário ou senha inválidos')
-                    return res.status(403).send(JSON.stringify('Tentativa de login falhou ! Usuário ou senha inválidos'))
+                    return res.status(403).end()
                 }
 
             } catch (error) {
