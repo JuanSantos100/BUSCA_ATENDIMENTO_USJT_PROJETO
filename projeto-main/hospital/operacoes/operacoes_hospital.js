@@ -54,8 +54,6 @@ app.delete('/hospital/delete/:id', (req, res) => {
     
     `
 
-    // NECESSÁRIO IMPLEMENTAR CASO NÃO ENCONTRE O HOSPITAL NO BANCO DE DADOS
-
     pool.query(
         sql,
         [cd_hospital],
